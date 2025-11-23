@@ -47,16 +47,14 @@ float LoanCalculator::calculateLoanBalance()
  */
 float LoanCalculator::calculatePayment()
 {
-  if(!amountSet_ || !interestSet_ || !periodTotalSet_)
-  {
-    throw invalid_argument("Must set loan amount, interest, and total period for this calculation" );
-  }
+  long double i = (long double)interestPeriodic_;
+long double totalAmount = (long double)amount_ - initialPayment_;
+totalAmount = totalAmount + openingFee_ + (totalAmount * (openingPercent_/100.0));
 
-  float totalAmount = amount_ - initialPayment_;
-  totalAmount = totalAmount + openingFee_ + (totalAmount * (openingPercent_/100.0));
+long double denom = (1 - pow((1+i), (-1*(long double)periodTotal_)));
+long double result = (i * totalAmount) / denom;
 
-  return (interestPeriodic_*totalAmount) /
-         (1 - pow((1+interestPeriodic_), (-1*periodTotal_)));
+return (float)result;
 }
 
 /**

@@ -1,0 +1,3 @@
+default_interest=7.5
+default_opening_fee=1000
+default_opening_percent=1.3

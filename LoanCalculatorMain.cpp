@@ -1,4 +1,4 @@
-
+#include <fstream>
 #include <stdlib.h>
 
 #include <exception>
@@ -133,6 +133,24 @@ int main(int argc, char **argv)
     mainWindow.show();
 
     return app.exec();
+  }
+
+  {
+      ifstream cfg("config.txt");
+      if(cfg.is_open())
+      {
+          long double amount=0, interest=0, payment=0;
+          int years=0;
+
+          cfg >> amount >> interest >> payment >> years;
+
+          if(amount > 0) calculator.setAmount(amount);
+          if(interest > 0) calculator.setInterest(interest);
+          if(payment > 0) calculator.setPayment(payment);
+          if(years > 0) calculator.setPeriodTotal(years*12);
+
+          cfg.close();
+      }
   }
 
   //

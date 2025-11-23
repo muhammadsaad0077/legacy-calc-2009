@@ -53,7 +53,12 @@ public:
   /**
    * Total loan amount A
    */
-  inline void setAmount(float A) { amount_ = A; amountSet_ = true; }
+  inline void setAmount(float A) {
+    if(A <= 0)
+        throw std::invalid_argument("Loan amount must be > 0");
+    amount_ = A;
+    amountSet_ = true;
+}
   inline float getAmount() const { return amount_; }
 
   /**
@@ -69,14 +74,25 @@ public:
    *    getInterest() will return 6.75
    *    getPeriodicInterest() will return .0675/12.0
    */
-  void setInterest(float i) { interest_ = i; interestPeriodic_ = i/100.0/12.0; interestSet_ = true; }
+  inline void setInterest(float i) {
+    if(i <= 0)
+        throw std::invalid_argument("Interest must be > 0");
+    interest_ = i;
+    interestPeriodic_ = i/100.0/12.0;
+    interestSet_ = true;
+}
   inline float getInterest() const         { return interest_; }
   inline float getPeriodicInterest() const { return interestPeriodic_; }
 
   void setPayment(float P)        { payment_ = P; paymentSet_ = true; }
   inline float getPayment() const { return payment_; }
 
-  void setPeriodTotal(int N)        { periodTotal_ = N; periodTotalSet_ = true; }
+  inline void setPeriodTotal(int N) {
+    if(N <= 0)
+        throw std::invalid_argument("Total period must be > 0 months");
+    periodTotal_ = N;
+    periodTotalSet_ = true;
+}
   inline int getPeriodTotal() const { return periodTotal_; }
 
   void setPeriodElapsed(int n)         { periodElapsed_ = n; periodElapsedSet_ = true; }
