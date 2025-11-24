@@ -1,3 +1,11 @@
+/**
+ * @file main.cpp
+ * @brief Entry point for the Loan Calculator application.
+ *
+ * Supports command-line execution and GUI execution.  
+ * Reads config file, parses arguments, performs calculations, and prints results.
+ */
+
 #include <fstream>
 #include <stdlib.h>
 
@@ -14,6 +22,10 @@
 
 using namespace std;
 
+/**
+ * @enum CALC_TYPE
+ * @brief Defines calculation types supported by the CLI.
+ */
 enum CALC_TYPE
 {
   CALC_UNKNOWN=0,
@@ -24,6 +36,9 @@ enum CALC_TYPE
   CALC_INTEREST
 };
 
+//
+// CLI arguments
+//
 const string ARG_CALC_BALANCE      = "-cb";
 const string ARG_CALC_PAYMENT      = "-cp";
 const string ARG_CALC_NUMPAYMENTS  = "-cn";
@@ -39,6 +54,10 @@ const string ARG_INTEREST          = "-i";
 const string ARG_OPENFEE           = "-of";
 const string ARG_OPENPERCENT       = "-op";
 
+/**
+ * @brief Registers all valid command-line options with the parser.
+ * @param clp Command line parser instance.
+ */
 void loadCmdLine(CmdLineParser &clp)
 {
   clp.setMainHelpText("A simple loan calculator");
@@ -78,9 +97,17 @@ void loadCmdLine(CmdLineParser &clp)
   clp.setMinNumberArgs(3);
 }
 
-//
-// Simple Command line parser
-//
+/**
+ * @brief Parses CLI input, sets calculator values, determines calculation type.
+ *
+ * Safe–checks all options before reading them.
+ *
+ * @param argc Number of arguments.
+ * @param argv List of arguments.
+ * @param clp Command line parser.
+ * @param calculator Reference to calculator instance.
+ * @return CALC_TYPE Selected calculation type.
+ */
 CALC_TYPE parseCommandLine(int argc, char **argv, CmdLineParser &clp, LoanCalculator &calculator)
 {
   CALC_TYPE ct(CALC_UNKNOWN);
@@ -91,7 +118,6 @@ CALC_TYPE parseCommandLine(int argc, char **argv, CmdLineParser &clp, LoanCalcul
     return ct;
   }
 
-  // safely apply only provided CLI options
   CmdLineOption *opt = nullptr;
 
   opt = clp.getCmdLineOption(ARG_AMOUNT);
@@ -135,9 +161,16 @@ CALC_TYPE parseCommandLine(int argc, char **argv, CmdLineParser &clp, LoanCalcul
   return ct;
 }
 
-//
-// Main program
-//
+/**
+ * @brief Application entry point.
+ *
+ * - Starts GUI if no args  
+ * - Otherwise parses arguments  
+ * - Loads config file  
+ * - Performs calculation  
+ *
+ * @return Program exit code.
+ */
 int main(int argc, char **argv)
 {
   LoanCalculator calculator;
@@ -153,6 +186,9 @@ int main(int argc, char **argv)
     return app.exec();
   }
 
+  //
+  // Load config defaults if present
+  //
   {
       ifstream cfg("config.txt");
       if(cfg.is_open())
@@ -171,9 +207,7 @@ int main(int argc, char **argv)
       }
   }
 
-  //
-  // Parse the command line arguments
-  //
+  // Parse command line input
   CmdLineParser clp;
   loadCmdLine(clp);
   CALC_TYPE ct = parseCommandLine(argc, argv, clp, calculator);
@@ -182,7 +216,6 @@ int main(int argc, char **argv)
   {
     cout << endl;
 
-    // Not sure why I had to cast the result to float, but otherwise it printed strange results
     if(ct == CALC_BALANCE)
     {
         cout << "Loan Balance = " << (float) calculator.calculateLoanBalance() << endl;
@@ -216,7 +249,6 @@ int main(int argc, char **argv)
     }
     else if(ct == CALC_UNKNOWN)
     {
-      // most likely the case that help was selected
       return 1;
     }
     else
@@ -225,14 +257,11 @@ int main(int argc, char **argv)
       return 0;
     }
 
-    // print the values set on the calculator
     cout << calculator.toString() << endl;
   }
   catch(const exception &e)
   {
     cerr << "Error executing loan calculator: " <<  e.what() << endl;
-    //printUsage();
-    //return 0;
   }
 
   cout << endl;

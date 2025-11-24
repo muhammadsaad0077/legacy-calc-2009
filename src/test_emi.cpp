@@ -1,4 +1,3 @@
-// tests/LoanCalculator_test.cpp
 #include <gtest/gtest.h>
 #include <cmath>
 #include "LoanCalculator.h"
