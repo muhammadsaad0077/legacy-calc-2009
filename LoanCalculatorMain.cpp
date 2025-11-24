@@ -91,25 +91,43 @@ CALC_TYPE parseCommandLine(int argc, char **argv, CmdLineParser &clp, LoanCalcul
     return ct;
   }
 
-  calculator.setAmount(
-       ((CmdLineOptionInt*)   clp.getCmdLineOption(ARG_AMOUNT))->getValue());
-  calculator.setInitialPayment(
-       ((CmdLineOptionFloat*) clp.getCmdLineOption(ARG_INITIAL_PAYMENT))->getValue());
-  calculator.setInterest(
-       ((CmdLineOptionFloat*) clp.getCmdLineOption(ARG_INTEREST))->getValue());
-  calculator.setPayment(
-       ((CmdLineOptionFloat*) clp.getCmdLineOption(ARG_PAYMENT))->getValue());
-  calculator.setPeriodTotal(
-       ((CmdLineOptionInt*)   clp.getCmdLineOption(ARG_PERIOD_TOTAL))->getValue());
-  calculator.setPeriodElapsed(
-       ((CmdLineOptionInt*)   clp.getCmdLineOption(ARG_PERIOD_ELAPSED))->getValue());
-  calculator.setOpeningFee(
-       ((CmdLineOptionFloat*) clp.getCmdLineOption(ARG_OPENFEE))->getValue());
-  calculator.setOpeningPercent(
-       ((CmdLineOptionFloat*) clp.getCmdLineOption(ARG_OPENPERCENT))->getValue());
+  // safely apply only provided CLI options
+  CmdLineOption *opt = nullptr;
+
+  opt = clp.getCmdLineOption(ARG_AMOUNT);
+  if(opt)
+      calculator.setAmount(((CmdLineOptionInt*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_INITIAL_PAYMENT);
+  if(opt)
+      calculator.setInitialPayment(((CmdLineOptionFloat*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_INTEREST);
+  if(opt)
+      calculator.setInterest(((CmdLineOptionFloat*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_PAYMENT);
+  if(opt)
+      calculator.setPayment(((CmdLineOptionFloat*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_PERIOD_TOTAL);
+  if(opt)
+      calculator.setPeriodTotal(((CmdLineOptionInt*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_PERIOD_ELAPSED);
+  if(opt)
+      calculator.setPeriodElapsed(((CmdLineOptionInt*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_OPENFEE);
+  if(opt)
+      calculator.setOpeningFee(((CmdLineOptionFloat*)opt)->getValue());
+
+  opt = clp.getCmdLineOption(ARG_OPENPERCENT);
+  if(opt)
+      calculator.setOpeningPercent(((CmdLineOptionFloat*)opt)->getValue());
 
   CmdLineOption *option(clp.getMutExclOption());
-  if(option != NULL) // cant be NULL, else the parser mutExcl checking didnt work
+  if(option != NULL)
   {
     ct = (CALC_TYPE) ((CmdLineOptionFlag*) option)->getValueKey();
   }
@@ -212,7 +230,7 @@ int main(int argc, char **argv)
   }
   catch(const exception &e)
   {
-    cerr << "Error executing loan calculator: " << + e.what() << endl;
+    cerr << "Error executing loan calculator: " <<  e.what() << endl;
     //printUsage();
     //return 0;
   }

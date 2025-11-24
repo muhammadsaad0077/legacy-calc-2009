@@ -72,9 +72,29 @@ float LoanCalculator::calculateNumberPayments()
     throw invalid_argument("Must set loan amount, interest, and payment for this calculation" );
   }
 
-  return (-1.0*log10(1.0-(interestPeriodic_*amount_/payment_))) /
-         log10(1.0 + interestPeriodic_);
+  long double i = (long double)interestPeriodic_;
+  long double A = (long double)amount_;
+  long double P = (long double)payment_;
+
+  // argument to log: 1 - i*A/P
+  long double arg = 1.0L - (i * A / P);
+  if(!(arg > 0.0L)) // handles nan/inf cases too
+  {
+    throw invalid_argument("Payment is too small (<= interest * amount). The loan will never be repaid with the current payment.");
+  }
+
+  long double numerator = -1.0L * log10l(arg);
+  long double denominator = log10l(1.0L + i);
+
+  if(!(denominator > 0.0L))
+  {
+    throw invalid_argument("Invalid periodic interest value (non-positive).");
+  }
+
+  long double result = numerator / denominator;
+  return (float)result;
 }
+
 
 /**
  * Original loan amount:
