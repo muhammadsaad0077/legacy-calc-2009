@@ -1,5 +1,10 @@
 - Build instruction
-g++ -std=c++11 *.cpp -o calc
+g++ -std=c++17 *.cpp -o calc
 
 - Run instruction
 ./calc
+
+- Test Cases Run instruction
+g++ -std=c++17 test_emi.cpp ../LoanCalculator.cpp -lgtest -lgtest_main -pthread -o test_emi
+    
+    Note:- make sure you are in the test( /src/test ) directory while running this instruction

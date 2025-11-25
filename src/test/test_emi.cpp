@@ -1,10 +1,11 @@
 #include <gtest/gtest.h>
 #include <cmath>
-#include "LoanCalculator.h"
+#include "../LoanCalculator.h"
+using namespace std;
 
 static bool isFiniteFloat(float v) { return std::isfinite((double)v); }
 
-// Test 1: Normal EMI calculation (compare to independent formula)
+// Normal EMI calculation (compare to independent formula)
 TEST(LoanCalculatorTest, NormalEmiCalculation) {
     LoanCalculator calc;
     calc.setAmount(200000.0f);     
@@ -21,29 +22,28 @@ TEST(LoanCalculatorTest, NormalEmiCalculation) {
     EXPECT_NEAR((double)payment, (double)expected, 1e-3);
 }
 
-// Test 2: Invalid input handling (negative amount or zero interest)
+// Invalid input handling (negative amount or zero interest)
 TEST(LoanCalculatorTest, InvalidInputHandling) {
     LoanCalculator calc;
 
-    // negative amount should throw
-    EXPECT_THROW(calc.setAmount(-1000.0f), std::invalid_argument);
+   
+    EXPECT_THROW(calc.setAmount(-1000.0f), invalid_argument);
 
-    // zero or negative interest should throw
-    EXPECT_THROW(calc.setInterest(0.0f), std::invalid_argument);
-    EXPECT_THROW(calc.setInterest(-5.0f), std::invalid_argument);
+    
+    EXPECT_THROW(calc.setInterest(0.0f), invalid_argument);
+    EXPECT_THROW(calc.setInterest(-5.0f), invalid_argument);
 
     calc.setAmount(10000.0f);
     calc.setInterest(5.0f);
     calc.setPayment(1.0f); 
-    EXPECT_THROW(calc.calculateNumberPayments(), std::invalid_argument);
+    EXPECT_THROW(calc.calculateNumberPayments(), invalid_argument);
 }
 
-// Test 3: Large tenure calculations without overflow
+// Large tenure calculations without overflow
 TEST(LoanCalculatorTest, LargeTenureNoOverflow) {
     LoanCalculator calc;
     calc.setAmount(10000.0f);
     calc.setInterest(5.0f);
-    // Very large number of months (stress test). Should not overflow or return NaN/Inf.
     calc.setPeriodTotal(100000); // 100k months
     float payment = calc.calculatePayment();
     EXPECT_TRUE(isFiniteFloat(payment));
